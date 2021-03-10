@@ -1,38 +1,47 @@
 <!--
  * @Author: weicong
  * @Date: 2021-03-10 10:30:01
- * @LastEditTime: 2021-03-10 11:02:52
+ * @LastEditTime: 2021-03-10 11:37:02
  * @LastEditors: weicong
  * @Description: 
 -->
 <template>
   <div class="preview">
-    <div>
+    <div class='preview-header'>
       <Button @click="exportExcel">导出Excel</Button>
       <Button @click="exportImage">导出图片</Button>
+      <Button @click="exportPDF">导出PDF</Button>
     </div>
+    <div ref="preview">
+        <Table :columns="columnsData" :data="rowsData"></Table>
+    </div>
+  
   </div>
 </template>
 
 <script>
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+import html2canvas from "html2canvas";
 export default {
   name: "Preview",
   data() {
     return {
       downloadLoading: false,
+      exportName: "文件",
       columnsData: [
-        {
-          title: "Name",
-          key: "name"
-        },
-        {
-          title: "Age",
-          key: "age"
-        },
-        {
-          title: "Address",
-          key: "address"
-        }
+           {
+            title: 'Name',
+            key: 'name'
+          },
+          {
+              title: 'Age',
+              key: 'age'
+          },
+          {
+              title: 'Address',
+              key: 'address'
+          }
       ],
       rowsData: [
         {
@@ -73,11 +82,50 @@ export default {
         excel.export_json_to_excel({
           header: tHeader,
           data,
-          filename: "本地数据模版",
+          filename: this.exportName,
           autoWidth: true,
           bookType: this.bookType
         });
         this.downloadLoading = false;
+      });
+    },
+    exportImage() {
+    const dom = this.$refs.preview;
+    html2canvas(dom, {
+        backgroundColor: "#ffffff"
+      }).then(canvas => {
+        // 地图需要使用html2canvas在转，然后绘制到dom上
+        let dataUrl = canvas.toDataURL("image/png");
+        const a = document.createElement('a');
+        a.href = dataUrl;
+        a.download = this.exportName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      })
+
+    },
+    exportPDF() {
+      const dom = this.$refs.preview;
+      html2canvas(dom, {
+        backgroundColor: "#ffffff"
+      }).then(canvas => {
+        // 地图需要使用html2canvas在转，然后使用img标签绘制到dom上
+        let dataUrl = canvas.toDataURL("image/png");
+        pdfMake.vfs = pdfFonts;
+        let docDefinition = {
+          pageOrientation: "landscape",
+          background: [
+            {
+              image: dataUrl,
+              width: 436.3,
+              height: 450,
+              alignment: "center",
+              margin: [0, 60, 0, 0]
+            }
+          ]
+        };
+        pdfMake.createPdf(docDefinition).download(this.exportName);
       });
     },
     cutValue(target, name) {
@@ -97,3 +145,16 @@ export default {
   }
 };
 </script>
+
+// <style scoped lang='scss'>
+// .preview{
+//   width:100%;
+//   height:100%;
+//   &-header{
+//     height:3rem
+//   }
+//   &-content{
+//     height:calc(100% - 3rem);
+//   }
+// }
+// </style>

@@ -1,3 +1,10 @@
+<!--
+ * @Author: weicong
+ * @Date: 2021-03-10 10:30:01
+ * @LastEditTime: 2021-03-10 11:24:20
+ * @LastEditors: weicong
+ * @Description: 
+-->
 <template>
   <div id="app">
     <div id="nav">
@@ -15,6 +22,7 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  height:100%
 }
 
 #nav {
