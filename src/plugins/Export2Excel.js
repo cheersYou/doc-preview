@@ -151,6 +151,9 @@ export function export_table_to_excel(id) {
     }),
     "test.xlsx"
   );
+  return new Blob([s2ab(wbout)], {
+    type: "application/octet-stream",
+  });
 }
 
 export function export_json_to_excel({
@@ -192,7 +195,7 @@ export function export_json_to_excel({
             wch: 10,
           };
         } else if (val.toString().charCodeAt(0) > 255) {
-        /*再判断是否为中文*/
+          /*再判断是否为中文*/
           return {
             wch: val.toString().length * 2,
           };
@@ -230,4 +233,7 @@ export function export_json_to_excel({
     }),
     `${filename}.${bookType}`
   );
+  return new Blob([s2ab(wbout)], {
+    type: "application/octet-stream",
+  });
 }

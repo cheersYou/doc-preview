@@ -1,7 +1,7 @@
 <!--
  * @Author: weicong
  * @Date: 2021-03-10 10:30:01
- * @LastEditTime: 2021-03-10 14:39:05
+ * @LastEditTime: 2021-03-10 17:15:26
  * @LastEditors: weicong
  * @Description: 
 -->
@@ -17,6 +17,11 @@
     <div ref="preview">
       <Table :columns="columnsData" :data="rowsData"></Table>
     </div>
+    <div class="preview-content">
+      <div>预览效果</div>
+      <iframe border="0" :src="fileUrl" v-if="fileType === 'iframe'"></iframe>
+      <img :src="fileUrl" v-else />
+    </div>
   </div>
 </template>
 
@@ -29,8 +34,9 @@ export default {
   name: "Preview",
   data() {
     return {
-      downloadLoading: false,
       exportName: "文件",
+      fileUrl: "",
+      fileType: "iframe",
       columnsData: [
         {
           title: "Name",
@@ -89,7 +95,6 @@ export default {
           autoWidth: true,
           bookType: this.bookType,
         });
-        this.downloadLoading = false;
       });
     },
     exportImage() {
@@ -105,6 +110,8 @@ export default {
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
+        this.fileType = "image";
+        this.fileUrl = dataUrl;
       });
     },
     exportPDF() {
@@ -127,7 +134,12 @@ export default {
             },
           ],
         };
-        pdfMake.createPdf(docDefinition).download(this.exportName);
+        const pdfDocGenerator = pdfMake.createPdf(docDefinition);
+        pdfDocGenerator.download(this.exportName);
+        pdfDocGenerator.getDataUrl((dataUrl) => {
+          this.fileType = "iframe";
+          this.fileUrl = dataUrl;
+        });
       });
     },
     exportTXT(text) {
@@ -139,6 +151,8 @@ export default {
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
+      this.fileType = "iframe";
+      this.fileUrl = url;
     },
     exportDocx() {
       const dom = this.$refs.preview;
@@ -206,15 +220,35 @@ export default {
 
 //
 <style scoped lang="scss">
-// .preview{
-//   width:100%;
-//   height:100%;
-//   &-header{
-//     height:3rem
-//   }
-//   &-content{
-//     height:calc(100% - 3rem);
-//   }
-// }
-//
+.preview {
+  width: 100%;
+  height: 100%;
+  &-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 3rem;
+  }
+  &-content {
+    font-size: 2rem;
+    padding: 1rem;
+    height: 35rem;
+    & > div {
+      display: inline-block;
+      border-bottom: 3px solid blue;
+    }
+    iframe {
+      display: block;
+      border: 0;
+      width: 100%;
+      height: 100%;
+      margin: 1rem;
+    }
+    img {
+      width: 100%;
+      height: 100%;
+      margin: 1rem;
+    }
+  }
+}
 </style>
