@@ -1,7 +1,7 @@
 <!--
  * @Author: weicong
  * @Date: 2021-03-10 10:30:01
- * @LastEditTime: 2021-03-11 16:42:01
+ * @LastEditTime: 2021-03-11 23:34:52
  * @LastEditors: weicong
  * @Description: 
 -->
@@ -9,6 +9,7 @@
   <div class="preview">
     <div class="preview-header">
       <Button @click="exportExcel">导出Excel</Button>
+
       <Button @click="exportImage">导出图片</Button>
       <Button @click="exportPDF">导出PDF</Button>
       <Button @click="exportDocx">导出DOC</Button>
