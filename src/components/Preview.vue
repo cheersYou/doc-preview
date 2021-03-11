@@ -1,7 +1,7 @@
 <!--
  * @Author: weicong
  * @Date: 2021-03-10 10:30:01
- * @LastEditTime: 2021-03-11 16:41:30
+ * @LastEditTime: 2021-03-11 16:42:01
  * @LastEditors: weicong
  * @Description: 
 -->
@@ -121,7 +121,6 @@ export default {
       }).then((canvas) => {
         // 地图需要使用html2canvas在转，然后使用img标签绘制到dom上
         let dataUrl = canvas.toDataURL("image/png");
-        console.log(pdfFonts);
         pdfMake.vfs = pdfFonts;
         pdfMake.fonts = {
           微软雅黑: {
